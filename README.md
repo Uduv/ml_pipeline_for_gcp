@@ -1,8 +1,7 @@
 # - Generate DATA 
 # - Create Table 
-# - CReate Repository
+# - Create Repository
 # - Explore The Data 
 # - Create Tables
 
-
-# - create triggers on data generation
+# - Create triggers on data generation
