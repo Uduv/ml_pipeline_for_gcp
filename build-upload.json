@@ -1,0 +1,16 @@
+{
+    "steps": [
+    {
+      "name": "bash",
+      "script": "#!/usr/bin/env bash echo 'Hello World'"
+    },
+    {
+      "name": "ubuntu",
+      "script": "echo hello"
+    },
+    {
+      "name": "python",
+      "script": "#!/usr/bin/env python\nprint('hello from python')\n"
+    }
+    ]
+  }
