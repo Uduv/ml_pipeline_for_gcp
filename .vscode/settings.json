@@ -1,0 +1,7 @@
+{
+    "python.analysis.extraPaths": [
+        "./Generation/generate_film",
+        "./Generation/generate_client",
+        "./Upload"
+    ]
+}
