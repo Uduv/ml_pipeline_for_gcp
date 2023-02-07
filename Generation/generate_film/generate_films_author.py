@@ -63,7 +63,7 @@ class generate_film :
         file_names = 'movie_data_' + str(rows_number) + '_rows_' + str(datetime.now().strftime("%Hh%Mm%Ss") ) + '.csv'
         path = str('Generation/data/named/' + file_names)
         bar = progressbar.ProgressBar(maxval=int(rows_number))
-        print("Generating %s"%file_names)
+        print("\n Generating %s \n"%file_names )
 
         start_time = time.time()
         bar.start()

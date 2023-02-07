@@ -1,0 +1,28 @@
+gcloud iam service-accounts create sa-workflow --display-name sa-workflow
+gcloud projects add-iam-policy-binding cloud4us-gcp-o1hoqiotj2rjjg8i9 \
+  --member serviceAccount:sa-workflow@cloud4us-gcp-o1hoqiotj2rjjg8i9.iam.gserviceaccount.com \
+  --role roles/bigquery.dataOwner --role roles/storage.objectAdmin
+
+
+gcloud workflows deploy load-workflow \
+ --location=europe-west4 \
+ --description='Sample load workflow' \
+ --source=./workflow.yaml \
+ --project cloud4us-gcp-o1hoqiotj2rjjg8i9 \
+ --service-account=sa-workflow@cloud4us-gcp-o1hoqiotj2rjjg8i9.iam.gserviceaccount.com
+
+gsutil mb -b on gs://input_data_bucket
+
+gcloud iam service-accounts create sa-cf-trigger --display-name sa-cf-trigger
+gcloud projects add-iam-policy-binding 	cloud4us-gcp-o1hoqiotj2rjjg8i9\
+  --member serviceAccount:sa-cf-trigger@cloud4us-gcp-o1hoqiotj2rjjg8i9.iam.gserviceaccount.com \
+  --role roles/workflows.invoker
+
+
+gcloud functions deploy workflow-trigger \
+       --region=us-central1 \
+       --entry-point onNewFile \
+       --runtime python38 \
+       --trigger-resource movies-personal \
+       --trigger-event google.storage.object.finalize \
+       --service-account=sa-cf-trigger@cloud4us-gcp-o1hoqiotj2rjjg8i9.iam.gserviceaccount.com

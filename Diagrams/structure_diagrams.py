@@ -1,11 +1,10 @@
 from diagrams import Cluster, Diagram
-from diagrams.gcp.analytics import BigQuery, Dataflow, PubSub
-from diagrams.gcp.compute import AppEngine, Functions,GPU
+from diagrams.gcp.analytics import BigQuery
+from diagrams.gcp.compute import Functions
 from diagrams.gcp.migration import TransferAppliance
-from diagrams.gcp.database import BigTable,SQL
+from diagrams.gcp.database import SQL
 from diagrams.gcp.iot import IotCore
 from diagrams.gcp.storage import GCS
-from diagrams.gcp.devtools import SDK
 from diagrams.gcp.ml import AIPlatform
 
     
@@ -13,10 +12,10 @@ import os
 os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin/'
 
 
-with Diagram("Generate and Process Data", show=False):
+with Diagram("Generate, Retrieve and Process Data", show=False,outformat='png'):
     
 
-    with Cluster("On-Prem"):
+    with Cluster("Data Genration and  Retrieval"):
         sdk = TransferAppliance("generate_upload.py")
         with Cluster("Source of Data"):
             [IotCore("Faker Generator")] >> sdk
@@ -26,13 +25,20 @@ with Diagram("Generate and Process Data", show=False):
     
     with Cluster("Targets"):
 
-        with Cluster("Data Lake"):
+        with Cluster("Bucket"):
             storage = GCS("storage") 
             BigQuery = BigQuery("BigQuery")
-            storage >> BigQuery
+            
 
-        with Cluster("Event Driven"):
-            with Cluster("Processing"):
-                BigQuery >> AIPlatform("Processing notebooks")
+            with Cluster("Process Data"):
+                functions = Functions("functions")
+                Workflow = Functions("Workflow")
+                
+                functions >> Workflow
+            storage >> functions  
+            Workflow >> BigQuery 
+
+        with Cluster("Processing"):
+            BigQuery >> AIPlatform("Processing notebooks")
 
     sdk >> storage

@@ -15,9 +15,12 @@ def upload_blob(bucket_name="movies-personal" , source_file_name="Generation\dat
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
-
-    blob.upload_from_filename(source_file_name)
-
+    try : 
+        blob.upload_from_filename(source_file_name)
+    except : 
+        print('You may disconnect to the VPN')
+        exit()
+        
     print(
         f"File {source_file_name} uploaded to {destination_blob_name}."
     )

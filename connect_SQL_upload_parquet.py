@@ -4,10 +4,11 @@ from Upload.upload_files_gcp import upload_blob
 
 
 
-if __name__ == "__main__" :
+def connect_SQL_upload_parquet() :
     # Generation 
+    print('--------------------------Connecting to the PostGreSQL database----------------------------')
     file_name,path_sql_parquet = postgreSQL.generate_postgreSQL_parquet()
-
     # Upload
+    print('--------------------------Connecting to GCP----------------------------')
     bucket_name="movies-personal"
     upload_blob(bucket_name=bucket_name,source_file_name=path_sql_parquet,destination_blob_name=file_name)
