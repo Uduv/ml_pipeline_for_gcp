@@ -23,7 +23,7 @@ fake.add_provider(LanguageProvider)
 
 class generate_film : 
     def __init__(self):
-        self.film = [self.get_movie_name(), fake.movie_genre(), self.get_movie_date(), self.get_movie_len(), self.get_movie_rating(), fake.language(), self.get_author()]
+        self.film = [self.get_movie_name(), fake.movie_genre(), self.get_movie_date(), self.get_movie_len(), self.get_movie_rating(), fake.language(), self.get_author(),self.get_timestamp()]
 
     def __iter__(self) :
         return iter(self.film)
@@ -57,6 +57,8 @@ class generate_film :
     def get_author(self) :
         return fake.first_name() + ' ' + fake.last_name()
 
+    def get_timestamp(self) :
+        return datetime.now()
 
     def generate_film_csvfile(rows_number = 1e6) : 
 
@@ -69,7 +71,7 @@ class generate_film :
         bar.start()
         with open(path, 'w',newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=',')
-            writer.writerow(['Title', 'Genre', 'Premiere', 'Runtime', 'Rating Score', 'Language','Author'])
+            writer.writerow(['Title', 'Genre', 'Premiere', 'Runtime', 'Rating Score', 'Language','Author','Timestamp'])
             for row in range(int(rows_number)) :
                 writer.writerow(generate_film())
                 bar.update(row)

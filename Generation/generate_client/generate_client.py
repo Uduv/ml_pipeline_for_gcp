@@ -21,7 +21,7 @@ fake.add_provider(VehicleProvider)
 class generate_client : 
     def __init__(self):
         self.client_name = str(','.join(fake.profile(['name']).values()))
-        self.film = [self.get_client_name(),self.get_client_sex(),self.get_client_mail(),self.get_client_movie_genres(), self.get_client_language_spoken(),self.get_client_car(),fake.credit_score()]
+        self.film = [self.get_client_name(),self.get_client_sex(),self.get_client_mail(),self.get_client_movie_genres(), self.get_client_language_spoken(),self.get_client_car(),fake.credit_score(),self.get_timestamp()]
 
     def __iter__(self) :
         return iter(self.film)
@@ -70,10 +70,11 @@ class generate_client :
         list_language = random.sample(('English', 'Chinese', 'Italian', 'Spanish', 'Hindi', 'Japanese'),random.randint(1,5))
         return  ",".join(list_language)
 
-            
-
     def get_movie_rating(self):
         return random.gauss(5, 2.5)
+
+    def get_timestamp(self) :
+        return datetime.now()
 
 
     def generate_client_csvfile(rows_number = 1e6) : 
@@ -85,7 +86,7 @@ class generate_client :
         bar.start()
         with open(path, 'w',newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=',')
-            writer.writerow(['name', 'sex', 'mail', 'client_movie_genres','client_language_spoken','client_car','credit_score'])
+            writer.writerow(['name', 'sex', 'mail', 'client_movie_genres','client_language_spoken','client_car','credit_score','timestamp'])
             for row in range(int(rows_number)) :
                 writer.writerow(generate_client())
                 bar.update(row)

@@ -3,5 +3,5 @@ from generate_upload_csv import generate_upload_csv
 
 
 if __name__ == "__main__" :
-    connect_SQL_upload_parquet()
+    # connect_SQL_upload_parquet()
     generate_upload_csv()
