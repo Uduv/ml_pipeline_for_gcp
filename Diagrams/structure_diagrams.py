@@ -11,11 +11,9 @@ from diagrams.gcp.ml import AIPlatform
 import os 
 os.environ["PATH"] += os.pathsep + 'C:/Program Files/Graphviz/bin/'
 
-
 with Diagram("Generate, Retrieve and Process Data", show=False,outformat='png'):
-    
 
-    with Cluster("Data Genration and  Retrieval"):
+    with Cluster("Data Generation and  Retrieval"):
         sdk = TransferAppliance("generate_upload.py")
         with Cluster("Source of Data"):
             [IotCore("Faker Generator")] >> sdk

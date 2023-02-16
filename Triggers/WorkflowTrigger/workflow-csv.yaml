@@ -9,9 +9,9 @@ main:
                 "${ \"gs://\" + args.bucket + \"/\" + args.object}"
                 ],
               "destinationTable": {
-                "datasetId": "sample_workflow",
+                "datasetId": "dataset_triggers",
                 "projectId": "cloud4us-gcp-o1hoqiotj2rjjg8i9",
-                "tableId": "random_name"
+                "tableId": "${args.table_name}"
               },
               "sourceFormat": "CSV",
               "autodetect": "true",

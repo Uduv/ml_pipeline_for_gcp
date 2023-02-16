@@ -17,8 +17,9 @@ def upload_blob(bucket_name="movies-personal" , source_file_name="Generation\dat
     blob = bucket.blob(destination_blob_name)
     try : 
         blob.upload_from_filename(source_file_name)
-    except : 
+    except Exception as e:
         print('You may disconnect to the VPN')
+        print(e)
         exit()
         
     print(

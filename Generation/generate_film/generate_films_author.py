@@ -61,11 +61,20 @@ class generate_film :
         return datetime.now()
 
     def generate_film_csvfile(rows_number = 1e6) : 
+        """generate film csv file with n rows numbers 
 
-        file_names = 'movie_data_' + str(rows_number) + '_rows_' + str(datetime.now().strftime("%Hh%Mm%Ss") ) + '.csv'
-        path = str('Generation/data/named/' + file_names)
+        Args:
+            rows_number (float, optional): _description_. Defaults to 1e6.
+
+        Returns:
+            string file_name: file name
+            string path : path of csv file
+        """
+
+        file_name = 'movie_data_' + str(rows_number) + '_rows_' + str(datetime.now().strftime("%Hh%Mm%Ss") ) + '.csv'
+        path = str('Generation/data/named/' + file_name)
         bar = progressbar.ProgressBar(maxval=int(rows_number))
-        print("\n Generating %s \n"%file_names )
+        print("\n Generating %s \n"%file_name )
 
         start_time = time.time()
         bar.start()
@@ -78,7 +87,7 @@ class generate_film :
         bar.finish()
 
         print("--- %s seconds ---" % (time.time() - start_time))
-        print("File %s generated"%file_names)
-        return file_names,path
+        print("File %s generated"%file_name)
+        return file_name,path
 
 

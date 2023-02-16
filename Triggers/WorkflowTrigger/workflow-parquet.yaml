@@ -1,0 +1,80 @@
+main:
+  params: [args]
+  steps:
+    - assign_vars:
+        assign:
+          - request_body : {
+            "load": {
+              "sourceUris": [
+                "${ \"gs://\" + args.bucket + \"/\" + args.object}"
+                ],
+              "destinationTable": {
+                "datasetId": "dataset_triggers",
+                "projectId": "cloud4us-gcp-o1hoqiotj2rjjg8i9",
+                "tableId": "${args.table_name}"
+              },
+              "sourceFormat": "PARQUET",
+              "autodetect": "true",
+            }
+          }
+
+    - createBigQueryLoadJob:
+        call: http.post
+        args:
+          url: https://bigquery.googleapis.com/bigquery/v2/projects/1058030566156/jobs
+          body:
+            configuration: ${request_body}
+          headers:
+            Content-Type: "application/json"
+          auth:
+            type: OAuth2
+        result: jobLoadRes
+
+    - getJobFinalStatus:
+        call: sub_getJobFinalStatus
+        args:
+              joburl: ${jobLoadRes.body.selfLink}
+        result: finalStatus
+
+    - checkJobResult:
+        switch:
+          - condition: ${"errorResult" in finalStatus.body.status }
+            raise: ${finalStatus.body.status.errors}
+
+    - tagSourceObject:
+        call: http.put
+        args:
+          url: "${\"https://storage.googleapis.com/storage/v1/b/\" + args.bucket + \"/o/\" + args.object }"
+          body:
+            metadata:
+              "status": "loaded"
+              "loadJobId": ${finalStatus.body.id}
+          headers:
+            Content-Type: "application/json"
+          auth:
+            type: OAuth2
+
+    - returnResult:
+        return:
+          "jobStatus" : ${finalStatus}
+
+sub_getJobFinalStatus:
+    params: [joburl]
+    steps:
+      - sleep:
+          call: sys.sleep
+          args:
+            seconds: 5
+      - getJobCurrentStatus:
+          call: http.get
+          args:
+            url: ${joburl}
+            auth:
+              type: OAuth2
+          result: jobStatusRes
+      - isJobFinished:
+          switch:
+            - condition: ${jobStatusRes.body.status.state == "DONE"}
+              return: ${jobStatusRes}
+          # else
+          next: sleep

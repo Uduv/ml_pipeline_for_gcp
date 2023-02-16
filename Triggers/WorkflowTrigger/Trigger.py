@@ -1,6 +1,3 @@
-# "template ; https://medium.com/codeshake/build-a-serverless-bigquery-ingestion-pipeline-using-cloud-workflows-f893f6b701ee"
-
-
 import json
 import google.auth
 from google.auth.transport.requests import AuthorizedSession
@@ -17,10 +14,15 @@ def onNewFile(event, context):
     scoped_credentials, project = google.auth.default(
         scopes=['https://www.googleapis.com/auth/cloud-platform'])
     authed_session = AuthorizedSession(scoped_credentials)
-
-    URL = 'https://workflowexecutions.googleapis.com/v1/projects/cloud4us-gcp-o1hoqiotj2rjjg8i9/locations/us-central1/workflows/workflow-triggers/executions'
-    file_id_dict = { 'bucket': '{}'.format(event['bucket']), 'object': '{}'.format(event['name']),'table_name' :'{}'.format(table_name) }
-    PARAMS = { 'argument' : json.dumps(file_id_dict) }
-    response = authed_session.post(url=URL, json=PARAMS)
-    print(response)
-    
+    if event['name'].endswith('.csv') :
+        URL = 'https://workflowexecutions.googleapis.com/v1/projects/cloud4us-gcp-o1hoqiotj2rjjg8i9/locations/us-central1/workflows/workflow-triggers/executions'
+        file_id_dict = { 'bucket': '{}'.format(event['bucket']), 'object': '{}'.format(event['name']),'table_name' :'{}'.format(table_name) }
+        PARAMS = { 'argument' : json.dumps(file_id_dict) }
+        response = authed_session.post(url=URL, json=PARAMS)
+        print(response)
+    elif event['name'].endswith('.parquet') :
+        URL = 'https://workflowexecutions.googleapis.com/v1/projects/cloud4us-gcp-o1hoqiotj2rjjg8i9/locations/us-central1/workflows/workflow-triggers-pasquet/executions'
+        file_id_dict = { 'bucket': '{}'.format(event['bucket']), 'object': '{}'.format(event['name']),'table_name' :'{}'.format(table_name) }
+        PARAMS = { 'argument' : json.dumps(file_id_dict) }
+        response = authed_session.post(url=URL, json=PARAMS)
+        print(response)

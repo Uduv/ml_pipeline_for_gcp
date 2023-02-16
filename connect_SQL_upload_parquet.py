@@ -5,7 +5,12 @@ from Upload.upload_files_gcp import upload_blob
 
 
 def connect_SQL_upload_parquet() :
-    # Generation 
+    """Connect to PostgreSQL database and generate a parquet file for the given dataset
+
+        Returns:
+            string file_name : file name
+            string path_sql_parquet : path to parquet file
+        """ 
     print('--------------------------Connecting to the PostGreSQL database----------------------------')
     file_name,path_sql_parquet = postgreSQL.generate_postgreSQL_parquet()
     # Upload

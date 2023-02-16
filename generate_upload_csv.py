@@ -3,7 +3,13 @@ from Generation.generate_client.generate_client import generate_client
 from Upload.upload_files_gcp import upload_blob
 
 
-def generate_upload_csv(film_rows_number=1e5,client_rows_number=1e4) : 
+def generate_upload_csv(film_rows_number=1e4,client_rows_number=1e3) : 
+    """ generate and upload film nad client csv files
+
+    Args:
+        film_rows_number (float, optional): Defaults to 1e4.
+        client_rows_number (float, optional):  Defaults to 1e3.
+    """
     # Generation 
     film_file_name,path_film_csv = generate_film.generate_film_csvfile(film_rows_number)
     client_file_name,path_client_csv = generate_client.generate_client_csvfile(client_rows_number)

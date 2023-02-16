@@ -5,6 +5,11 @@ import pandas as pd
 #list all csv files only
 
 def merge_csv(path_files) :
+    """ Merge all csv files in path_files
+
+    Args:
+        path_files (string): dir path
+    """
     cv_append = pd.DataFrame()
 
     for file in path_files : 

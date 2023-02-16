@@ -42,8 +42,6 @@ class generate_client :
             return ('Male')
         else : 
             return ('Female')
-        # profile = fake.profile(['sex'])
-        # return str(','.join(profile.values()))
 
     def get_client_car(self) :
         return fake.vehicle_make_model()
@@ -77,11 +75,20 @@ class generate_client :
         return datetime.now()
 
 
-    def generate_client_csvfile(rows_number = 1e6) : 
-        file_names = 'client_' + str(rows_number) + '_rows_' + str(datetime.now().strftime("%Hh%Mm%Ss") ) + '.csv'
-        path = str('Generation/data/client/' + file_names)
+    def generate_client_csvfile(rows_number = 1e6) :
+        """generate client csv file with n rows numbers 
+
+        Args:
+            rows_number (float, optional): _description_. Defaults to 1e6.
+
+        Returns:
+            string file_name: file name
+            string path : path of csv file
+        """
+        file_name = 'client_' + str(rows_number) + '_rows_' + str(datetime.now().strftime("%Hh%Mm%Ss") ) + '.csv'
+        path = str('Generation/data/client/' + file_name)
         bar = progressbar.ProgressBar(maxval=int(rows_number))
-        print("Generating %s"%file_names)
+        print("Generating %s"%file_name)
         start_time = time.time()
         bar.start()
         with open(path, 'w',newline='') as csvfile:
@@ -92,8 +99,8 @@ class generate_client :
                 bar.update(row)
         bar.finish()
 
-        print("--- %s seconds ---" % (time.time() - start_time))
-        print("File %s generated"%file_names)
-        return file_names,path
+        print("--------- %s seconds ----------" % (time.time() - start_time))
+        print("File %s generated"%file_name)
+        return file_name,path
 
 
