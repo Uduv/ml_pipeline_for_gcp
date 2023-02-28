@@ -3,5 +3,6 @@
         "./Generation/generate_film",
         "./Generation/generate_client",
         "./Upload"
-    ]
+    ],
+    "python.analysis.typeCheckingMode": "off"
 }
