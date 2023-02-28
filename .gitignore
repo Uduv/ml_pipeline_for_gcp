@@ -2,3 +2,4 @@
 *.parquet
 movie-recommender/
 Triggers/Keys/
+__pycache__/

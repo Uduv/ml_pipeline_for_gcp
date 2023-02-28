@@ -13,10 +13,7 @@ fake = Faker()
 
 fake.add_provider(CreditScore)
 fake.add_provider(VehicleProvider)
-# fake.credit_score_provider()
-# 'TransUnion'
-# fake.credit_score()
-# 791
+
 
 class generate_client : 
     def __init__(self):

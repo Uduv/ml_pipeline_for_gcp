@@ -6,7 +6,7 @@ The pipeline generate and/or retrieve data from a PostgreSQL then upload the dat
 
 ### Diagram of Processes
 
-![generate,_retrieve_and_process_data.png](Pipeline%20for%20Machine%20Learning%208f64fafd11cc4aa38259e1d780045fa8/generate_retrieve_and_process_data.png)
+![generate,_retrieve_and_process_data.png]()
 
 # Generate Dataset
 
@@ -14,31 +14,31 @@ The `generate_upload_csv.py` python file call each dataset generator and then tr
 
 ## Generate Film Dataset
 
-Datasets are generated with Faker python Package and classic random number generation. Random generation as been preferred on specific use cases rather than Faker to reduce the resources needed to generate files. 
+Datasets are generated with Faker python Package and classic random number generation. Random generation as been preferred on specific use cases rather than Faker to reduce the resources needed to generate files.
 
-The main dataset is a 1.7Go `.csv` file of Films as the preview show below : 
+The main dataset is a 1.7Go `.csv` file of Films as the preview show below :
 
-| Title | Genre | Premiere | Runtime | Rating Score | Language | Author |
-| --- | --- | --- | --- | --- | --- | --- |
-| Drive Billion Real | Documentary | 07/01/06 | 358 | 5.697228 | English | Danny Hudson |
-| Floor Family Worry | Action | 89/07/09 | 114 | 0.772004 | Italian | John Pruitt |
-| Create First Week | Horror | 09/02/04 | 74 | 3.676618 | Italian | Anthony Perez |
-| Police His Population | Comedy | 05/06/14 | 125 | 7.304545 | Hindi | Matthew Jackson |
-| Report Country So | Horror | 78/07/14 | 107 | 8.982453 | Chinese | Jason Delgado |
+| Title                 | Genre       | Premiere | Runtime | Rating Score | Language | Author          |
+| --------------------- | ----------- | -------- | ------- | ------------ | -------- | --------------- |
+| Drive Billion Real    | Documentary | 07/01/06 | 358     | 5.697228     | English  | Danny Hudson    |
+| Floor Family Worry    | Action      | 89/07/09 | 114     | 0.772004     | Italian  | John Pruitt     |
+| Create First Week     | Horror      | 09/02/04 | 74      | 3.676618     | Italian  | Anthony Perez   |
+| Police His Population | Comedy      | 05/06/14 | 125     | 7.304545     | Hindi    | Matthew Jackson |
+| Report Country So     | Horror      | 78/07/14 | 107     | 8.982453     | Chinese  | Jason Delgado   |
 
 ---
 
 ## Generate Client Dataset
 
-The second dataset is around 2Go ****`.csv` files of Client and information about their film preferences and credit score:
+The second dataset is around 2Go \*\*\*\*`.csv` files of Client and information about their film preferences and credit score:
 
-| name | sex | mail | client_movie_genres | client_language_spoken | client_car | credit_score |
-| --- | --- | --- | --- | --- | --- | --- |
-| Charles House | Male | charleshouse@gmail.com | Horror,Thriller,Mystery | Spanish,Japanese | Kia Sorento | 775 |
-| Tiffany Parsons | Male | tiffanyparsons@gmail.com | Action,Romance,Thriller,Documentary,Drama,Horror,Comedy,Mystery | Spanish,Chinese | Mercury Villager | 559 |
-| George Maldonado | Female | georgemaldonado@hotmail.com | Action,Mystery,Thriller,Horror,Drama,Documentary,Comedy | Japanese,Spanish | Volkswagen Touareg | 615 |
-| Jessica Roberts | Male | jessicaroberts@orange.com | Documentary,Horror,Romance | Italian | Volvo V70 | 473 |
-| Natalie Delgado | Female | nataliedelgado@hotmail.com | Action,Horror,Thriller,Romance | English,Spanish,Italian | Nissan NV3500 HD Passenger | 309 |
+| name             | sex    | mail                        | client_movie_genres                                             | client_language_spoken  | client_car                 | credit_score |
+| ---------------- | ------ | --------------------------- | --------------------------------------------------------------- | ----------------------- | -------------------------- | ------------ |
+| Charles House    | Male   | charleshouse@gmail.com      | Horror,Thriller,Mystery                                         | Spanish,Japanese        | Kia Sorento                | 775          |
+| Tiffany Parsons  | Male   | tiffanyparsons@gmail.com    | Action,Romance,Thriller,Documentary,Drama,Horror,Comedy,Mystery | Spanish,Chinese         | Mercury Villager           | 559          |
+| George Maldonado | Female | georgemaldonado@hotmail.com | Action,Mystery,Thriller,Horror,Drama,Documentary,Comedy         | Japanese,Spanish        | Volkswagen Touareg         | 615          |
+| Jessica Roberts  | Male   | jessicaroberts@orange.com   | Documentary,Horror,Romance                                      | Italian                 | Volvo V70                  | 473          |
+| Natalie Delgado  | Female | nataliedelgado@hotmail.com  | Action,Horror,Thriller,Romance                                  | English,Spanish,Italian | Nissan NV3500 HD Passenger | 309          |
 
 ## PostgreSQL Database queried with python
 
@@ -46,27 +46,27 @@ A script is available to retrieve data from a PosgreSQL database then upload to 
 
 I set up an database with PostgreSQL to reproduce an system where you need to retrieve data from. Then, I query this database from python with the package `psycopg2` and process SQL request to clean and select data from a table on this database.
 
-The dataset created is uploaded to GCP via gcloud SDK. 
+The dataset created is uploaded to GCP via gcloud SDK.
 
-| Time | V1 | V2 | V3 | V4 | … | V27 | Amount | Class |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0 | -1.35981 | -0.07278 | 2.536347 | 1.378155 | … | 0.133558 | 149.62 | 0 |
-| 0 | 1.191857 | 0.266151 | 0.16648 | 0.448154 | … | -0.00898 | 2.69 | 0 |
-| 1 | -1.35835 | -1.34016 | 1.773209 | 0.37978 | … | -0.05535 | 378.66 | 0 |
-| 1 | -0.96627 | -0.18523 | 1.792993 | -0.86329 | … | 0.062723 | 123.5 | 0 |
-| 2 | -1.15823 | 0.877737 | 1.548718 | 0.403034 | … | 0.219422 | 69.99 | 0 |
-| 2 | -0.42597 | 0.960523 | 1.141109 | -0.16825 | … | 0.253844 | 3.67 | 0 |
-| 4 | 1.229658 | 0.141004 | 0.045371 | 1.202613 | … | 0.034507 | 4.99 | 0 |
+| Time | V1       | V2       | V3       | V4       | …   | V27      | Amount | Class |
+| ---- | -------- | -------- | -------- | -------- | --- | -------- | ------ | ----- |
+| 0    | -1.35981 | -0.07278 | 2.536347 | 1.378155 | …   | 0.133558 | 149.62 | 0     |
+| 0    | 1.191857 | 0.266151 | 0.16648  | 0.448154 | …   | -0.00898 | 2.69   | 0     |
+| 1    | -1.35835 | -1.34016 | 1.773209 | 0.37978  | …   | -0.05535 | 378.66 | 0     |
+| 1    | -0.96627 | -0.18523 | 1.792993 | -0.86329 | …   | 0.062723 | 123.5  | 0     |
+| 2    | -1.15823 | 0.877737 | 1.548718 | 0.403034 | …   | 0.219422 | 69.99  | 0     |
+| 2    | -0.42597 | 0.960523 | 1.141109 | -0.16825 | …   | 0.253844 | 3.67   | 0     |
+| 4    | 1.229658 | 0.141004 | 0.045371 | 1.202613 | …   | 0.034507 | 4.99   | 0     |
 
 # Setup & Explore
 
 ## Upload Data to Google Cloud Platform
 
-The script`upload_files_gcp.py` is a file uploader to GCP based on the gcloud SDK client. 
+The script`upload_files_gcp.py` is a file uploader to GCP based on the gcloud SDK client.
 
-In order to use the gcloud SDK , you need to set up your account on it. When set up, the SDK generate a ssh tokens in your `%AppData% local/gcloud/` folder that are needed during to process the gcloud APIs calls. 
+In order to use the gcloud SDK , you need to set up your account on it. When set up, the SDK generate a ssh tokens in your `%AppData% local/gcloud/` folder that are needed during to process the gcloud APIs calls.
 
-Then, you can use the function  `upload_blob`  which gather all needed information to login in cloud, and upload the file that you specify in parameters during the function call.
+Then, you can use the function `upload_blob` which gather all needed information to login in cloud, and upload the file that you specify in parameters during the function call.
 
 ```python
 def upload_blob(bucket_name="movies-personal" , source_file_name="PATH\DATASET.csv", destination_blob_name="client_remote.csv"):
@@ -82,13 +82,13 @@ def upload_blob(bucket_name="movies-personal" , source_file_name="PATH\DATASET.c
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
-    try : 
+    try :
         blob.upload_from_filename(source_file_name)
     except Exception as e:
         print('You may disconnect to the VPN')
         print(e)
         exit()
-        
+
     print(
         f"File {source_file_name} uploaded to {destination_blob_name}."
     )
@@ -104,7 +104,7 @@ After enable all APIs and the proper IAM rules, a bucket on a GCP Storage is nee
 
 ### Idea
 
-A Cloud Functions is listening if there is a file upload on Cloud Storage. If the file is a csv or paquet, the Functions call a Cloud Workflow to generate or append a BigQuery table. 
+A Cloud Functions is listening if there is a file upload on Cloud Storage. If the file is a csv or paquet, the Functions call a Cloud Workflow to generate or append a BigQuery table.
 
 ### functioning
 
@@ -112,7 +112,7 @@ A Cloud Functions is listening if there is a file upload on Cloud Storage. If th
 
 While a file is upload to bucket, a google cloud Functions will be triggered. The Cloud Functions will generate a dictionary with all the files information (filename ,object, bucket) and transfer it to a Workflow instance.
 
-*Code of the Cloud Functions :*  
+_Code of the Cloud Functions :_
 
 ```python
 import json
@@ -148,9 +148,9 @@ def onNewFile(event, context):
 
 Cloud Workflow is a way to de execute YAML code on call.
 
-The Cloud Workflow instance retrieve the dictionary variable from the Cloud functions and assign to the proper variable in order to create a BigQuery table on the right dataset. 
+The Cloud Workflow instance retrieve the dictionary variable from the Cloud functions and assign to the proper variable in order to create a BigQuery table on the right dataset.
 
-*Code of the Cloud Workflow :*  
+_Code of the Cloud Workflow :_
 
 ```yaml
 main:
@@ -237,7 +237,7 @@ sub_getJobFinalStatus:
 
 ## GCP BigQuery
 
-An SQL Procedure has been create to join tables by calling them in a procedure with a regex replacement expression. 
+An SQL Procedure has been create to join tables by calling them in a procedure with a regex replacement expression.
 
 ```sql
 -- Replace DATASET_NAME
@@ -254,7 +254,7 @@ SET FILE_NAME = IFNULL(FILE_NAME, "client_merged");
 SET ENV = IFNULL(ENV, "DEV");
 SET TABLE_NAME = CONCAT(FILE_NAME, IF(ENV = "PROD", "", CONCAT("_", ENV)));
 
-SET CREATION_QUERY = 
+SET CREATION_QUERY =
 IF(IS_NEW_TABLE,
 "CREATE OR REPLACE TABLE `DATASET_NAME.TABLE_NAME` ( name STRING,sex STRING,mail STRING,client_movie_genres STRING ,client_language_spoken STRING,client_car STRING,credit_score INT ,timestamp TIMESTAMP)", "" ) ;
 
@@ -274,7 +274,7 @@ CALL `DATASET_NAME.PROC_CLI_UNION_TABLE` ("client", TRUE,"union_client_merged", 
 
 # Merge data
 
-**Problematic :** Multiple files has been generated during the development periods and needs to be merged together. There is 3 different methods that I developed to merge data : 
+**Problematic :** Multiple files has been generated during the development periods and needs to be merged together. There is 3 different methods that I developed to merge data :
 
 - A python script to merge all specifics csv files together before upload to GCP. This is not reliable method as the script doesn’t have access to files already upload to GCP.
 - An auto merge on the ingress job processed by a Workflow Trigger that will append an existing table or create a new table if the datafile name is unknown. This is the most reliable and solid solution.
@@ -298,31 +298,6 @@ CALL `DATASET_NAME.PROC_CLI_UNION_TABLE` ("client", TRUE,"union_client_merged", 
 
 ### User rights
 
-aiplatform.batchPredictionJobs.create
-aiplatform.batchPredictionJobs.list
-aiplatform.customJobs.list
-aiplatform.dataLabelingJobs.create
-aiplatform.dataLabelingJobs.list
-aiplatform.datasets.create
-aiplatform.datasets.get
-aiplatform.datasets.import
-aiplatform.datasets.list
-aiplatform.datasets.update
-aiplatform.endpoints.list
-aiplatform.entityTypes.create
-aiplatform.executions.list
-aiplatform.features.list
-aiplatform.featurestores.create
-aiplatform.featurestores.list
-aiplatform.hyperparameterTuningJobs.list
-aiplatform.migratableResources.search
-aiplatform.models.list
-aiplatform.operations.list
-aiplatform.pipelineJobs.create
-aiplatform.pipelineJobs.get
-aiplatform.pipelineJobs.list
-aiplatform.trainingPipelines.create
-aiplatform.trainingPipelines.list
 analyticshub.dataExchanges.list
 apikeys.keys.create
 apikeys.keys.delete
@@ -542,20 +517,6 @@ monitoring.monitoredResourceDescriptors.get
 monitoring.monitoredResourceDescriptors.list
 monitoring.timeSeries.list
 networkmanagement.topologygraphs.read
-notebooks.executions.list
-notebooks.instances.checkUpgradability
-notebooks.instances.create
-notebooks.instances.get
-notebooks.instances.getHealth
-notebooks.instances.list
-notebooks.instances.upgrade
-notebooks.locations.list
-notebooks.operations.get
-notebooks.operations.list
-notebooks.runtimes.create
-notebooks.runtimes.list
-notebooks.schedules.delete
-notebooks.schedules.list
 oauthconfig.testusers.get
 oauthconfig.testusers.update
 oauthconfig.verification.get
