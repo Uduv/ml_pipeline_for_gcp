@@ -18,12 +18,11 @@ def merge_csv(path_files) :
         cv_append = cv_append.append(temp,ignore_index = True)
 
     cv_append.dropna()
-    cv_append.to_csv('./Generation/data/merge_csv/movie_data_merge_2.csv')
+    cv_append.to_csv('./Generation/data/merge_csv/movie_data_merge.csv')
 
 
-csv_unnamed_files = glob.glob('./Generation/data/unnamed/*.{}'.format('csv'))
-csv_named_files = glob.glob('./Generation/data/named/*.{}'.format('csv'))
+csv_film_files = glob.glob('./Generation/data/film/*.{}'.format('csv'))
 
 
 if __name__ == "__main__" : 
-    merge_csv(csv_unnamed_files)
+    merge_csv(csv_film_files)
