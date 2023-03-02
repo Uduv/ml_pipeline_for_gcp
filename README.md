@@ -1,75 +1,85 @@
-# Pipeline for Machine Learning
+# Pipeline for Machine Learning Plazza
 
-# General Idea
+**Code is available on this Git Repository : https://github.com/Uduv/ml_pipeline_for_gcp**
 
-The pipeline generate and/or retrieve data from a PostgreSQL then upload the data to a GCP bucket. When the upload is finished, a Cloud Functions is triggered to generate a table on BigQuery for each file.
+# Big Picture
 
-### Diagram of Processes
+This article will explain to you how to develop a pipeline that generates a dataset and retrieves data from a PostgreSQL database, then uploads the data to a GCP bucket. Once the upload is complete, a Cloud Function is triggered to generate a table on BigQuery for each file.
 
-![generate,_retrieve_and_process_data.png]()
+*Diagram of Processes*
 
-# Generate Dataset
+![generate,_retrieve_and_process_data.png](Diagrams/diagrams_resized.png)
 
-The `generate_upload_csv.py` python file call each dataset generator and then transfers to the GCP uploader the CSVs path in order to upload them to a bucket.
+# 1. Data Generation and Retrieval
 
-## Generate Film Dataset
+## 1.1 Generate Dataset
 
-Datasets are generated with Faker python Package and classic random number generation. Random generation as been preferred on specific use cases rather than Faker to reduce the resources needed to generate files.
+First, we will generate a dataset and retrieve it from an external source, in our case PostgreSQL.
 
-The main dataset is a 1.7Go `.csv` file of Films as the preview show below :
+Datasets are generated using the Faker Python package and classic random number generation. Random generation has been preferred in specific use cases rather than Faker to reduce the resources needed to generate files.
 
-| Title                 | Genre       | Premiere | Runtime | Rating Score | Language | Author          |
-| --------------------- | ----------- | -------- | ------- | ------------ | -------- | --------------- |
-| Drive Billion Real    | Documentary | 07/01/06 | 358     | 5.697228     | English  | Danny Hudson    |
-| Floor Family Worry    | Action      | 89/07/09 | 114     | 0.772004     | Italian  | John Pruitt     |
-| Create First Week     | Horror      | 09/02/04 | 74      | 3.676618     | Italian  | Anthony Perez   |
-| Police His Population | Comedy      | 05/06/14 | 125     | 7.304545     | Hindi    | Matthew Jackson |
-| Report Country So     | Horror      | 78/07/14 | 107     | 8.982453     | Chinese  | Jason Delgado   |
+You can find two dataset generator scripts for client and movie datasets in the repository.
 
----
+*Code of the Client Dataset Generator can be [found here](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Generation/generate_client/generate_client.py)* [↗️*.*](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Triggers/WorkflowTrigger/workflow-csv.yaml)
 
-## Generate Client Dataset
+## 1.2 Preview of datasets
 
-The second dataset is around 2Go \*\*\*\*`.csv` files of Client and information about their film preferences and credit score:
+Example of dataset that you can obtain with Faker dataset generation
 
-| name             | sex    | mail                        | client_movie_genres                                             | client_language_spoken  | client_car                 | credit_score |
-| ---------------- | ------ | --------------------------- | --------------------------------------------------------------- | ----------------------- | -------------------------- | ------------ |
-| Charles House    | Male   | charleshouse@gmail.com      | Horror,Thriller,Mystery                                         | Spanish,Japanese        | Kia Sorento                | 775          |
-| Tiffany Parsons  | Male   | tiffanyparsons@gmail.com    | Action,Romance,Thriller,Documentary,Drama,Horror,Comedy,Mystery | Spanish,Chinese         | Mercury Villager           | 559          |
-| George Maldonado | Female | georgemaldonado@hotmail.com | Action,Mystery,Thriller,Horror,Drama,Documentary,Comedy         | Japanese,Spanish        | Volkswagen Touareg         | 615          |
-| Jessica Roberts  | Male   | jessicaroberts@orange.com   | Documentary,Horror,Romance                                      | Italian                 | Volvo V70                  | 473          |
-| Natalie Delgado  | Female | nataliedelgado@hotmail.com  | Action,Horror,Thriller,Romance                                  | English,Spanish,Italian | Nissan NV3500 HD Passenger | 309          |
+### *Preview of film dataset*
 
-## PostgreSQL Database queried with python
+| Title | Genre | Premiere | Runtime | Rating Score | Language | Author |
+| --- | --- | --- | --- | --- | --- | --- |
+| Drive Billion Real | Documentary | 07/01/06 | 358 | 5.697228 | English | Danny Hudson |
+| Floor Family Worry | Action | 89/07/09 | 114 | 0.772004 | Italian | John Pruitt |
+| Create First Week | Horror | 09/02/04 | 74 | 3.676618 | Italian | Anthony Perez |
+| Police His Population | Comedy | 05/06/14 | 125 | 7.304545 | Hindi | Matthew Jackson |
+| Report Country So | Horror | 78/07/14 | 107 | 8.982453 | Chinese | Jason Delgado |
 
-A script is available to retrieve data from a PosgreSQL database then upload to GCP.
+### *Preview of client dataset*
 
-I set up an database with PostgreSQL to reproduce an system where you need to retrieve data from. Then, I query this database from python with the package `psycopg2` and process SQL request to clean and select data from a table on this database.
+| name | sex | mail | client_movie_genres | client_language_spoken | client_car | credit_score |
+| --- | --- | --- | --- | --- | --- | --- |
+| Charles House | Male | charleshouse@gmail.com | Horror,Thriller,Mystery | Spanish,Japanese | Kia Sorento | 775 |
+| Tiffany Parsons | Male | tiffanyparsons@gmail.com | Action,Romance,Thriller,Documentary,Drama,Horror,Comedy,Mystery | Spanish,Chinese | Mercury Villager | 559 |
+| George Maldonado | Female | georgemaldonado@hotmail.com | Action,Mystery,Thriller,Horror,Drama,Documentary,Comedy | Japanese,Spanish | Volkswagen Touareg | 615 |
+| Jessica Roberts | Male | jessicaroberts@orange.com | Documentary,Horror,Romance | Italian | Volvo V70 | 473 |
+| Natalie Delgado | Female | nataliedelgado@hotmail.com | Action,Horror,Thriller,Romance | English,Spanish,Italian | Nissan NV3500 HD Passenger | 309 |
 
-The dataset created is uploaded to GCP via gcloud SDK.
+## 1.3 PostgreSQL Database queried with python
 
-| Time | V1       | V2       | V3       | V4       | …   | V27      | Amount | Class |
-| ---- | -------- | -------- | -------- | -------- | --- | -------- | ------ | ----- |
-| 0    | -1.35981 | -0.07278 | 2.536347 | 1.378155 | …   | 0.133558 | 149.62 | 0     |
-| 0    | 1.191857 | 0.266151 | 0.16648  | 0.448154 | …   | -0.00898 | 2.69   | 0     |
-| 1    | -1.35835 | -1.34016 | 1.773209 | 0.37978  | …   | -0.05535 | 378.66 | 0     |
-| 1    | -0.96627 | -0.18523 | 1.792993 | -0.86329 | …   | 0.062723 | 123.5  | 0     |
-| 2    | -1.15823 | 0.877737 | 1.548718 | 0.403034 | …   | 0.219422 | 69.99  | 0     |
-| 2    | -0.42597 | 0.960523 | 1.141109 | -0.16825 | …   | 0.253844 | 3.67   | 0     |
-| 4    | 1.229658 | 0.141004 | 0.045371 | 1.202613 | …   | 0.034507 | 4.99   | 0     |
+To retrieve data from a PostgreSQL database, you can use the script available at this [link ↗️](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Data_PostgreSQL/connect_to_postgreSQL.py) .
 
-# Setup & Explore
+To reproduce a system where you retrieve data from a database, you need to set up a database with PostgreSQL. Once you have set up the database, you can use the `psycopg2` package to query the database. Code can be [found here ↗️.](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Data_PostgreSQL/connect_to_postgreSQL.py)
 
-## Upload Data to Google Cloud Platform
+*Preview of PostgreSQL example dataset :*
 
-The script`upload_files_gcp.py` is a file uploader to GCP based on the gcloud SDK client.
+| Time | V1 | V2 | V3 | V4 | … | V27 | Amount | Class |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | -1.35981 | -0.07278 | 2.536347 | 1.378155 | … | 0.133558 | 149.62 | 0 |
+| 0 | 1.191857 | 0.266151 | 0.16648 | 0.448154 | … | -0.00898 | 2.69 | 0 |
+| 1 | -1.35835 | -1.34016 | 1.773209 | 0.37978 | … | -0.05535 | 378.66 | 0 |
+| 1 | -0.96627 | -0.18523 | 1.792993 | -0.86329 | … | 0.062723 | 123.5 | 0 |
+| 2 | -1.15823 | 0.877737 | 1.548718 | 0.403034 | … | 0.219422 | 69.99 | 0 |
+| 2 | -0.42597 | 0.960523 | 1.141109 | -0.16825 | … | 0.253844 | 3.67 | 0 |
+| 4 | 1.229658 | 0.141004 | 0.045371 | 1.202613 | … | 0.034507 | 4.99 | 0 |
 
-In order to use the gcloud SDK , you need to set up your account on it. When set up, the SDK generate a ssh tokens in your `%AppData% local/gcloud/` folder that are needed during to process the gcloud APIs calls.
+# 2. GCP
 
-Then, you can use the function `upload_blob` which gather all needed information to login in cloud, and upload the file that you specify in parameters during the function call.
+You can get an GCP sandbox on [this link](https://plazza.orange.com/docs/DOC-2088880) ↗️ available maximum 21 days or obtain a 90 days free project with a [Google account ↗️.](https://cloud.google.com/free/?utm_source=google&utm_medium=cpc&utm_campaign=emea-ro-all-en-bkws-all-all-trial-e-gcp-1011340&utm_content=text-ad-none-any-DEV_c-CRE_619252260196-ADGP_Hybrid%20%7C%20BKWS%20-%20EXA%20%7C%20Txt%20~%20GCP%20~%20Trial-KWID_43700072834187129-kwd-931452961599-userloc_1011795&utm_term=KW_300%20credit%20google%20cloud-NET_g-PLAC_&gclid=CjwKCAiAr4GgBhBFEiwAgwORrVci1y85qFDPI336N8BAkc-dYDJH8wB2KrZk_71H5yqSlszfCTIgABoCm_YQAvD_BwE&gclsrc=aw.ds)
+
+GCP stands for Google Cloud Platform, which is a suite of cloud computing services offered by Google that provides infrastructure, platform, and software services for building and deploying applications and managing data.
+
+## 2.1 Upload Data to GCP
+
+The script [upload_files_gcp.py ↗️](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Upload/upload_files_gcp.py) is available to upload files to GCP using the Gcloud SDK client. To use the Gcloud SDK, you must first set up your account. You can find the Gcloud SDK client [here ↗️](https://cloud.google.com/sdk/docs/install).
+
+Once set up, the SDK generates an SSH token in your `%AppData% local/gcloud/` folder that is required to process Gcloud API calls.
+
+To upload a file, you will need to trigger the `upload_blob` function, which gathers all necessary information to log in to the cloud and upload the file specified as a parameter during the function call.
 
 ```python
-def upload_blob(bucket_name="movies-personal" , source_file_name="PATH\DATASET.csv", destination_blob_name="client_remote.csv"):
+def upload_blob(bucket_name="BUCKET_NAME" , source_file_name="PATH\DATASET.csv", destination_blob_name="client_remote.csv"):
     """Uploads a file to the bucket.
     The ID of your GCS \n
     bucket_name = "your-bucket-name" \n
@@ -82,37 +92,46 @@ def upload_blob(bucket_name="movies-personal" , source_file_name="PATH\DATASET.c
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(destination_blob_name)
-    try :
+    try : 
         blob.upload_from_filename(source_file_name)
     except Exception as e:
-        print('You may disconnect to the VPN')
+        print('You may disconnect to the VPN') #if you re connected to Orange VPN
         print(e)
         exit()
-
+        
     print(
         f"File {source_file_name} uploaded to {destination_blob_name}."
     )
 ```
 
-## Google Cloud Storage
+## 2.2 Google Cloud Storage
 
-After enable all APIs and the proper IAM rules, a bucket on a GCP Storage is need. This bucket has an ID which will be use by GCP SDK to identity where send files on your Cloud.
+Google Cloud Storage bucket is a scalable and secure container in the GCP for storing and accessing data objects from anywhere, with integration to other GCP services.
 
-## Google Cloud Functions and Workflows
+You will need a bucket on Cloud Storage, which has an ID that the GCP SDK will use to identify where to send files on your Cloud.
 
-[↗️Tutorial link](https://medium.com/codeshake/build-a-serverless-bigquery-ingestion-pipeline-using-cloud-workflows-f893f6b701ee)
+## 2.3 Transfer dataset From GCS to BigQuery
 
 ### Idea
 
-A Cloud Functions is listening if there is a file upload on Cloud Storage. If the file is a csv or paquet, the Functions call a Cloud Workflow to generate or append a BigQuery table.
+We want to transfer Dataset from GCS to BigQuery table and two solutions can be used.
 
-### functioning
+1. A **Cloud Functions** check each of the files uploaded on your Cloud Storage. If the file is a CSV or parquet, the Functions call a Cloud Workflow to generate or append a BigQuery table. 
+2. A **BigQuery Data Transfers** service. The service allow you to set up a source of various types (GCS, AWS S3, Google Ads …), schedule auto retrieve and ingress database to a BigQuery table. 
+
+We will choose to use the first option for our pipeline, and you can find a full [tutorial link ↗️.](https://medium.com/codeshake/build-a-serverless-bigquery-ingestion-pipeline-using-cloud-workflows-f893f6b701ee)
+
+### Cloud Functions and Cloud Workflows
+
+Google Cloud Functions is a serverless execution environment for building and connecting cloud services such as Python, Java, Go. A function is triggered when an event being watched is fired, such as a file uploaded on a GCS.
+
+### Functioning
 
 **Cloud Functions:**
 
-While a file is upload to bucket, a google cloud Functions will be triggered. The Cloud Functions will generate a dictionary with all the files information (filename ,object, bucket) and transfer it to a Workflow instance.
+When our Cloud Functions is triggered, The Cloud Functions generate a dictionary with the file information (filename, object, bucket) and transfer it to a Workflow instance.
 
-_Code of the Cloud Functions :_
+*Code of the Cloud Functions can be [found here* ↗️](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Triggers/WorkflowTrigger/Trigger.py)*.*
 
 ```python
 import json
@@ -146,11 +165,11 @@ def onNewFile(event, context):
 
 **Cloud Workflow**
 
-Cloud Workflow is a way to de execute YAML code on call.
+Cloud Workflow is a way to execute YAML code on call.
 
-The Cloud Workflow instance retrieve the dictionary variable from the Cloud functions and assign to the proper variable in order to create a BigQuery table on the right dataset.
+Your Cloud Workflow instance retrieves the dictionary variable from the Cloud functions and assign to the proper variable in order to create a BigQuery table on the right dataset. 
 
-_Code of the Cloud Workflow :_
+*Code of the Cloud Workflow can be [found here* ↗️*.*](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Triggers/WorkflowTrigger/workflow-csv.yaml)
 
 ```yaml
 main:
@@ -176,7 +195,7 @@ main:
     - createBigQueryLoadJob:
         call: http.post
         args:
-          url: https://bigquery.googleapis.com/bigquery/v2/projects/1058030566156/jobs
+          url: https://bigquery.googleapis.com/bigquery/v2/projects/PROJECT_ID/jobs
           body:
             configuration: ${request_body}
           headers:
@@ -235,52 +254,24 @@ sub_getJobFinalStatus:
           next: sleep
 ```
 
-## GCP BigQuery
+# 3. Merge data
 
-An SQL Procedure has been create to join tables by calling them in a procedure with a regex replacement expression.
+**Problematic :** Multiple files has been generated during the development periods and needs to be merged together. There is 3 different methods that I developed to merge data : 
 
-```sql
--- Replace DATASET_NAME
-
-CREATE OR REPLACE PROCEDURE
-`DATASET_NAME.PROC_CLI_UNION_TABLE`(NAME_REGEX STRING,IS_NEW_TABLE BOOL,FILE_NAME STRING,ENV STRING )
-BEGIN
-DECLARE MERGED_DATE STRING;
-DECLARE TABLE_NAME STRING;
-DECLARE EXECUTION_QUERY STRING;
-DECLARE CREATION_QUERY STRING;
-
-SET FILE_NAME = IFNULL(FILE_NAME, "client_merged");
-SET ENV = IFNULL(ENV, "DEV");
-SET TABLE_NAME = CONCAT(FILE_NAME, IF(ENV = "PROD", "", CONCAT("_", ENV)));
-
-SET CREATION_QUERY =
-IF(IS_NEW_TABLE,
-"CREATE OR REPLACE TABLE `DATASET_NAME.TABLE_NAME` ( name STRING,sex STRING,mail STRING,client_movie_genres STRING ,client_language_spoken STRING,client_car STRING,credit_score INT ,timestamp TIMESTAMP)", "" ) ;
-
-SET CREATION_QUERY = REGEXP_REPLACE(CREATION_QUERY, "TABLE_NAME", TABLE_NAME);
-EXECUTE IMMEDIATE CREATION_QUERY;
-
-SET EXECUTION_QUERY =
-"INSERT INTO `DATASET_NAME.TABLE_NAME` ( name ,sex ,mail ,client_movie_genres ,client_language_spoken,client_car,credit_score) SELECT DISTINCT name,sex,mail,client_movie_genres,client_language_spoken,client_car,credit_score FROM `DATASET_NAME.NAME_REGEX*` ORDER BY credit_score DESC";
-
-SET EXECUTION_QUERY = REGEXP_REPLACE(EXECUTION_QUERY, "NAME_REGEX", NAME_REGEX);
-SET EXECUTION_QUERY = REGEXP_REPLACE(EXECUTION_QUERY, "TABLE_NAME", TABLE_NAME);
-EXECUTE IMMEDIATE EXECUTION_QUERY;
-END;
-
-CALL `DATASET_NAME.PROC_CLI_UNION_TABLE` ("client", TRUE,"union_client_merged", "PROD");
-```
-
-# Merge data
-
-**Problematic :** Multiple files has been generated during the development periods and needs to be merged together. There is 3 different methods that I developed to merge data :
-
-- A python script to merge all specifics csv files together before upload to GCP. This is not reliable method as the script doesn’t have access to files already upload to GCP.
-- An auto merge on the ingress job processed by a Workflow Trigger that will append an existing table or create a new table if the datafile name is unknown. This is the most reliable and solid solution.
+- A python script to merge all specifics CSV files together before upload to GCP. This is not a reliable method as the script doesn’t have access to files already upload to GCP.
+- An auto merge on the ingress job processed by a Workflow Trigger that will append an existing table or create a new table if the table does not exist yet. This is the most reliable and solid solution.
 - A SQL procedure merging a set of dataset selected by a regex command to a new SQL table or appending an existing table. Fastidious but reliable.
 
-## GCP Authorization required for the machine account
+### 3.1 Merge BigQuery tables with SQL procedure
+
+- **BigQuery** is a cloud-based data warehouse by GCP for storing, querying, and analyzing large datasets quickly and easily, with support for SQL, machine learning, and advanced analytics.
+- An **SQL procedure** is similar to a function in Python - you define it and can call it afterward.
+
+You will create an SQL procedure to merge BigQuery tables by calling them in a procedure with a regex replacement expression. 
+
+*Code of the SQL procedure can be [found here* ↗️*.*](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Triggers/SQL_merge_procedure.sql)
+
+# 4. GCP Authorizations required
 
 ### Functions instance rights
 
@@ -298,7 +289,7 @@ CALL `DATASET_NAME.PROC_CLI_UNION_TABLE` ("client", TRUE,"union_client_merged", 
 
 ### User rights
 
-analyticshub.dataExchanges.list
+`analyticshub.dataExchanges.list
 apikeys.keys.create
 apikeys.keys.delete
 apikeys.keys.getKeyString
@@ -350,18 +341,6 @@ clientauthconfig.clients.list
 clientauthconfig.clients.listWithSecrets
 clientauthconfig.clients.update
 cloudasset.assets.searchAllResources
-cloudbuild.builds.approve
-cloudbuild.builds.create
-cloudbuild.builds.get
-cloudbuild.builds.list
-cloudbuild.builds.update
-cloudbuild.connections.fetchLinkableRepositories
-cloudbuild.connections.list
-cloudbuild.connections.update
-cloudbuild.integrations.get
-cloudbuild.integrations.list
-cloudbuild.repositories.create
-cloudbuild.workerpools.list
 cloudfunctions.functions.call
 cloudfunctions.functions.create
 cloudfunctions.functions.delete
@@ -603,4 +582,4 @@ workflows.workflows.create
 workflows.workflows.delete
 workflows.workflows.get
 workflows.workflows.list
-workflows.workflows.update
+workflows.workflows.update`

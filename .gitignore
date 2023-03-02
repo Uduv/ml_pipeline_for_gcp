@@ -4,5 +4,5 @@ movie-recommender/
 Triggers/Keys/
 __pycache__/
 main_loop_test.py
-Diagrams/
+Diagrams/structure_digrams.py
 Data_PostgreSQL/convert.py
