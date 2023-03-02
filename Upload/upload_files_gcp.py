@@ -2,7 +2,7 @@ from google.cloud import storage
 import os
 
 
-def upload_blob(bucket_name="movies-personal" , source_file_name="Generation\data\client\client_1000000.0_rows_17h53m54s.csv", destination_blob_name="client_remote.csv"):
+def upload_blob(bucket_name="movies-personal" , source_file_name="Generation\data\client\DATASET.csv", destination_blob_name="FILENAME_ON_GCP.csv"):
     """Uploads a file to the bucket.
     The ID of your GCS \n
     bucket_name = "your-bucket-name" \n
@@ -18,7 +18,7 @@ def upload_blob(bucket_name="movies-personal" , source_file_name="Generation\dat
     try : 
         blob.upload_from_filename(source_file_name)
     except Exception as e:
-        print('You may disconnect to the VPN')
+        print('You may disconnect yourself to the VPN')
         print(e)
         exit()
         
@@ -26,11 +26,12 @@ def upload_blob(bucket_name="movies-personal" , source_file_name="Generation\dat
         f"File {source_file_name} uploaded to {destination_blob_name}."
     )
 
- 
+
+# Exemple of parameters
 bucket_name = "movies-personal" 
 source_file_name = "Generation\data\client\client_1000000.0_rows_17h53m54s.csv"
 destination_blob_name = "client_remote.csv"
-os.environ["GCLOUD_PROJECT"] = "cloud4us-gcp-o1hoqiotj2rjjg8i9"
+os.environ["GCLOUD_PROJECT"] = "ID_PROJECT"
 
 if __name__ == '__main__' :
     

@@ -1,4 +1,3 @@
-\.gitignore
 *.csv
 *.parquet
 movie-recommender/
@@ -6,3 +5,4 @@ Triggers/Keys/
 __pycache__/
 main_loop_test.py
 Diagrams/
+Data_PostgreSQL/convert.py
