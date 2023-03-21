@@ -4,7 +4,8 @@
 
 # Big Picture
 
-This article will explain to you how to develop a pipeline that generates a dataset and retrieves data from a PostgreSQL database, then uploads the data to a GCP bucket. Once the upload is complete, a Cloud Function is triggered to generate a table on BigQuery for each file.
+In this article, you will learn how to develop a pipeline that generates a dataset and retrieves data from a PostgreSQL database, then uploads the data to a GCP bucket. Once the upload is complete, a Cloud Function is triggered to generate a table on BigQuery for each file.
+
 
 *Diagram of Processes*
 
@@ -20,7 +21,7 @@ Datasets are generated using the Faker Python package and classic random number 
 
 You can find two dataset generator scripts for client and movie datasets in the repository.
 
-*Code of the Client Dataset Generator can be [found here](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Generation/generate_client/generate_client.py)* [↗️*.*](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Triggers/WorkflowTrigger/workflow-csv.yaml)
+*Code of the Client Dataset Generator can be [found here](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Generation/generate_client/generate_client.py)* [↗️.](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Triggers/WorkflowTrigger/workflow-csv.yaml)
 
 ## 1.2 Preview of datasets
 
@@ -131,7 +132,7 @@ Google Cloud Functions is a serverless execution environment for building and co
 
 When our Cloud Functions is triggered, The Cloud Functions generate a dictionary with the file information (filename, object, bucket) and transfer it to a Workflow instance.
 
-*Code of the Cloud Functions can be [found here* ↗️](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Triggers/WorkflowTrigger/Trigger.py)*.*
+*Code of the Cloud Functions can be [found here ↗️](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Triggers/WorkflowTrigger/Trigger.py)*.
 
 ```python
 import json
@@ -169,7 +170,7 @@ Cloud Workflow is a way to execute YAML code on call.
 
 Your Cloud Workflow instance retrieves the dictionary variable from the Cloud functions and assign to the proper variable in order to create a BigQuery table on the right dataset. 
 
-*Code of the Cloud Workflow can be [found here* ↗️*.*](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Triggers/WorkflowTrigger/workflow-csv.yaml)
+*Code of the Cloud Workflow can be [found here↗️.](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Triggers/WorkflowTrigger/workflow-csv.yaml)
 
 ```yaml
 main:
@@ -264,12 +265,12 @@ sub_getJobFinalStatus:
 
 ### 3.1 Merge BigQuery tables with SQL procedure
 
+You will create an SQL procedure to merge BigQuery tables by calling them in a procedure with a regex replacement expression. 
+
 - **BigQuery** is a cloud-based data warehouse by GCP for storing, querying, and analyzing large datasets quickly and easily, with support for SQL, machine learning, and advanced analytics.
 - An **SQL procedure** is similar to a function in Python - you define it and can call it afterward.
 
-You will create an SQL procedure to merge BigQuery tables by calling them in a procedure with a regex replacement expression. 
-
-*Code of the SQL procedure can be [found here* ↗️*.*](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Triggers/SQL_merge_procedure.sql)
+Code of the SQL procedure can be [found here↗️.](https://github.com/Uduv/ml_pipeline_for_gcp/blob/master/Triggers/SQL_merge_procedure.sql)
 
 # 4. GCP Authorizations required
 
